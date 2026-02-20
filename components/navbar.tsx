@@ -14,8 +14,7 @@ import SignOutButton from "./sign-out-btn";
 import { useSession } from "@/lib/auth/auth-client";
 
 export default function Navbar() {
-  
-    const { data : session} = useSession();
+  const { data: session, isPending } = useSession();
 
   return (
     <nav className="border-b border-gray-200 bg-white">
@@ -27,66 +26,77 @@ export default function Navbar() {
           <Briefcase />
           Job Tracker
         </Link>
-        <div className="flex items-center gap-2">
-          {session?.user ? (
-            <>
-              <Link href="/dashboard">
-                <Button
-                  variant="ghost"
-                  className="text-gray-700 hover:text-black"
-                >
-                  Dashboard
-                </Button>
-              </Link>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="relative h-8 w-8 rounded-full"
-                  >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={session.user.image ?? undefined}
-                        alt={session.user.name}
-                      />
-                      <AvatarFallback className="bg-primary text-white">
-                        {session.user.name[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
 
-                <DropdownMenuContent className="w-56" align="end">
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {session.user.name}
-                      </p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {session.user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <SignOutButton />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
+        <div className="flex items-center gap-2">
+          {isPending ? (
+            // Animated loading skeleton
+            <div className="flex items-center gap-2 animate-pulse">
+              <div className="w-20 h-9 bg-gray-200 rounded" />
+              <div className="w-24 h-9 bg-gray-200 rounded" />
+            </div>
           ) : (
-            <>
-              <Link href="/sign-in">
-                <Button
-                  variant="ghost"
-                  className="text-gray-700 hover:text-black"
-                >
-                  log in
-                </Button>
-              </Link>
-              <Link href="/sign-up">
-                <Button className="bg-primary hover:bg-primary/90">
-                  Start for free
-                </Button>
-              </Link>
-            </>
+            // Fade in when loaded
+            <div className="flex items-center gap-2 animate-in fade-in duration-300">
+              {session?.user ? (
+                <>
+                  <Link href="/dashboard">
+                    <Button
+                      variant="ghost"
+                      className="text-gray-700 hover:text-black"
+                    >
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="relative h-8 w-8 rounded-full"
+                      >
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage
+                            src={session.user.image ?? undefined}
+                            alt={session.user.name}
+                          />
+                          <AvatarFallback className="bg-primary text-white">
+                            {session.user.name[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" align="end">
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {session.user.name}
+                          </p>
+                          <p className="text-xs leading-none text-muted-foreground">
+                            {session.user.email}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <SignOutButton />
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </>
+              ) : (
+                <>
+                  <Link href="/sign-in">
+                    <Button
+                      variant="ghost"
+                      className="text-gray-700 hover:text-black"
+                    >
+                      log in
+                    </Button>
+                  </Link>
+                  <Link href="/sign-up">
+                    <Button className="bg-primary hover:bg-primary/90">
+                      Start for free
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>

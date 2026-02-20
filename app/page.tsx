@@ -1,9 +1,13 @@
 import ImageTabs from "@/components/images-tab";
 import { Button } from "@/components/ui/button";
+import { getSession } from "@/lib/auth/auth";
 import { ArrowRight, Briefcase, CheckCircle2, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
+
+  
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <main className="flex-1">
@@ -19,7 +23,7 @@ export default function Home() {
             <div className="flex flex-col items-center gap-4">
               <Link href="/sign-up">
                 <Button size="lg" className="h-12 px-8 text-lg font-medium">
-                  Start for free <ArrowRight className="ml-2" />
+                  {session?.user ? "Go to Dashboard" : "Start for free"} <ArrowRight className="ml-2" />
                 </Button>
               </Link>
               <p className="text-sm text-muted-foreground">
