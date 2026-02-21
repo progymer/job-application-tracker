@@ -3,15 +3,24 @@ import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth/auth";
 import { ArrowRight, Briefcase, CheckCircle2, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default async function Home() {
+async function HeroButton() {
   const session = await getSession();
+  return (
+    <Link href={session?.user ? "/dashboard" : "/sign-up"}>
+      <Button size="lg" className="h-12 px-8 text-lg font-medium">
+        {session?.user ? "Go to Dashboard" : "Start for free"}
+        <ArrowRight className="ml-2" />
+      </Button>
+    </Link>
+  );
+}
 
-  
+export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <main className="flex-1">
-        {/* Hero Section */}
         <section className="container mx-auto px-4 py-32">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-black mb-6 text-6xl font-bold">
@@ -21,11 +30,15 @@ export default async function Home() {
               Capture, organize, and manage your job search in one place.
             </p>
             <div className="flex flex-col items-center gap-4">
-              <Link href="/sign-up">
-                <Button size="lg" className="h-12 px-8 text-lg font-medium">
-                  {session?.user ? "Go to Dashboard" : "Start for free"} <ArrowRight className="ml-2" />
-                </Button>
-              </Link>
+              <Suspense
+                fallback={
+                  <Button size="lg" className="h-12 px-8 text-lg font-medium">
+                    Start for free <ArrowRight className="ml-2" />
+                  </Button>
+                }
+              >
+                <HeroButton />
+              </Suspense>
               <p className="text-sm text-muted-foreground">
                 Free forever. No credit card required.
               </p>
@@ -33,10 +46,8 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Hero Images Section with Tabs */}
         <ImageTabs />
 
-        {/* Features Section */}
         <section className="border-t bg-white py-24">
           <div className="container mx-auto px-4">
             <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-3">
