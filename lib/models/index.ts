@@ -5,3 +5,4 @@ import "./job-applications";
 export { default as Board } from "./board";
 export { default as Column } from "./column";
 export { default as JobApplication } from "./job-applications";
+export { default as UserProfile } from "./user-profile";
