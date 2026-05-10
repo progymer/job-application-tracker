@@ -1,6 +1,7 @@
 import { getSession } from "@/lib/auth/auth";
 import connectDB from "@/lib/db";
 import userProfile from "@/lib/models/user-profile";
+import { rateLimit } from "@/lib/rate-limit";
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -14,6 +15,18 @@ export async function POST(req: NextRequest) {
 
     if (!session?.user)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // check rate limit
+    const { allowed, remaining } = rateLimit(session.user.id);
+
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: "Too many requests. You can review up to 5 resumes per day.",
+        },
+        { status: 429 },
+      );
+    }
 
     // 2. parse req.json() to get job details
 
@@ -70,8 +83,16 @@ export async function POST(req: NextRequest) {
     // 5. get the text back
     const text = response.text;
     const clean = text?.replace(/```json|```/g, "").trim();
-    const feedback = JSON.parse(clean!);
-    return NextResponse.json(feedback);
+
+    if (!clean) {
+      return NextResponse.json(
+        { error: "Empty response from AI" },
+        { status: 500 },
+      );
+    }
+
+    const feedback = JSON.parse(clean);
+    return NextResponse.json({ ...feedback, remaining });
 
     // 6. JSON.parse(text) and return it
   } catch (err) {

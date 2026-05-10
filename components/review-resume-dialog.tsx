@@ -33,6 +33,7 @@ export const ReviewResumeDialog = ({ job, open, onOpenChange}: ResumeReviewDialo
     "idle",
   );
   const [feedback, setFeedback] = useState<ReviewFeedback | null>(null);
+  const [error, setError] = useState("");
 
   async function handleReview() {
     setStatus("loading")
@@ -43,6 +44,13 @@ export const ReviewResumeDialog = ({ job, open, onOpenChange}: ResumeReviewDialo
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(updatedjob)
     })
+
+    if (res.status === 429) {
+      const data = await res.json();
+      setError(data.error);
+      setStatus("error");
+      return;
+    }
 
     if(!res.ok){
         setStatus("error")
@@ -149,7 +157,7 @@ export const ReviewResumeDialog = ({ job, open, onOpenChange}: ResumeReviewDialo
                 Something went wrong
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Could not review your resume. Please try again.
+                {error || "Could not review your resume. Please try again."}
               </p>
             </div>
             <Button
