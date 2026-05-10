@@ -1,6 +1,6 @@
 import { JobApplication, Column } from "@/lib/models/models.types"
-import { Card, CardContent } from "./ui/card";
-import { Edit2, ExternalLink, MoreVertical, Plus, Tag, Trash2 } from "lucide-react";
+import { Card, CardContent, CardFooter } from "./ui/card";
+import { Edit2, ExternalLink, MoreVertical, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { deleteJobApplication, updateJobApplication } from "@/lib/actions/job-applications";
@@ -9,6 +9,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useState } from "react";
+import { ReviewResumeDialog } from "./review-resume-dialog";
 
 interface JobApplicationsCardProps {
     job: JobApplication;
@@ -31,6 +32,7 @@ export default function JobApplicationsCard({ job, columns, dragHandleProps, }: 
     tags: job.tags?.join(", ") || "",
     description: job.description || "",
   });
+  const [reviewOpen, setReviewOpen] = useState(false);
 
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
@@ -89,7 +91,7 @@ export default function JobApplicationsCard({ job, columns, dragHandleProps, }: 
                 {job.company}
               </p>
               {job.description && (
-                <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                <p className="text-xs text-muted-foreground mb-2 line-clamp-2 max-w-62.5">
                   {job.description}
                 </p>
               )}
@@ -163,7 +165,18 @@ export default function JobApplicationsCard({ job, columns, dragHandleProps, }: 
             </div>
           </div>
         </CardContent>
+        <CardFooter>
+          <Button variant="outline" className="w-full" onClick={() => setReviewOpen(true)}>
+            review my cv for this role
+          </Button>
+        </CardFooter>
       </Card>
+
+      <ReviewResumeDialog 
+        job={job}
+        open={reviewOpen}
+        onOpenChange={setReviewOpen}
+      />
 
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
         <DialogContent className="max-w-2xl">
@@ -248,6 +261,7 @@ export default function JobApplicationsCard({ job, columns, dragHandleProps, }: 
                 <Textarea
                   id="description"
                   rows={3}
+                  className="resize-none max-h-32 overflow-y-auto"
                   placeholder="Brief description of the role..."
                   value={formData.description}
                   onChange={(e) =>
