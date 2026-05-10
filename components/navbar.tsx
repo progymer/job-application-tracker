@@ -7,11 +7,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import SignOutButton from "./sign-out-btn";
 import { useSession } from "@/lib/auth/auth-client";
+import ResumeUpload from "./resume-upload";
 
 export default function Navbar() {
   const { data: session, isPending } = useSession();
@@ -75,6 +77,9 @@ export default function Navbar() {
                           </p>
                         </div>
                       </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <ResumeUpload />
+                      <DropdownMenuSeparator />
                       <SignOutButton />
                     </DropdownMenuContent>
                   </DropdownMenu>
