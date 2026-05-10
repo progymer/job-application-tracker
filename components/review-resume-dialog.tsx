@@ -5,6 +5,7 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { toast } from "sonner";
 
 interface ResumeReviewDialogProps {
   job: JobApplication;
@@ -23,6 +24,7 @@ export interface ReviewFeedback {
   }[];
   matchedKeywords: string[];
   missingKeywords: string[];
+  remainig: number;
 }
 
 
@@ -37,6 +39,7 @@ export const ReviewResumeDialog = ({ job, open, onOpenChange}: ResumeReviewDialo
 
   async function handleReview() {
     setStatus("loading")
+    setError("")
     const updatedjob = { ...job, description };
 
     const res = await fetch("/api/resume-review", {
@@ -60,6 +63,14 @@ export const ReviewResumeDialog = ({ job, open, onOpenChange}: ResumeReviewDialo
     const data = await res.json()
     setFeedback(data)
     setStatus("done")
+
+    if (data.remaining === 2) {
+      toast.warning("You have 2 resume reviews left today.");
+    }
+
+    if (data.remaining === 0) {
+      toast.error("You've used all 5 resume reviews for today.");
+    }
   }
 
   const matchScoreColor = (value: number) => {
@@ -129,7 +140,7 @@ export const ReviewResumeDialog = ({ job, open, onOpenChange}: ResumeReviewDialo
               Reviewing your resume...
             </p>
             <p className="text-sm text-muted-foreground">
-              this usally take a few seconds...
+              this usally take a few seconds
             </p>
 
             <style>
