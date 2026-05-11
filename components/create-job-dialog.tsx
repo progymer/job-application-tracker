@@ -58,7 +58,7 @@ export default function CreateJobApplicationDialog({columnId, boardId}: CreateJo
     
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild >
+        <DialogTrigger asChild>
           <Button
             variant="outline"
             className="w-full mb-4 justify-start text-muted-foreground border-dashed border-2 hover:border-solid hover:bg-muted/50"
@@ -161,6 +161,7 @@ export default function CreateJobApplicationDialog({columnId, boardId}: CreateJo
                 <Textarea
                   id="notes"
                   rows={4}
+                  className="resize-none max-h-32 overflow-y-auto"
                   value={formData.notes}
                   onChange={(e) =>
                     setFormData({ ...formData, notes: e.target.value })
