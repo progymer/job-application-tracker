@@ -149,6 +149,7 @@ export default function CreateJobApplicationDialog({columnId, boardId}: CreateJo
                 <Textarea
                   id="description"
                   rows={3}
+                  className="resize-none max-h-32 overflow-y-auto"
                   placeholder="Brief description of the role..."
                   value={formData.description}
                   onChange={(e) =>
@@ -161,7 +162,6 @@ export default function CreateJobApplicationDialog({columnId, boardId}: CreateJo
                 <Textarea
                   id="notes"
                   rows={4}
-                  className="resize-none max-h-32 overflow-y-auto"
                   value={formData.notes}
                   onChange={(e) =>
                     setFormData({ ...formData, notes: e.target.value })
