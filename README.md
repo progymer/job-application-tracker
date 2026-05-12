@@ -98,7 +98,7 @@ UserProfile
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-username/job-tracker.git
+git clone https://github.com/prrogymer/job-application-tracker.git
 cd job-tracker
 npm install
 ```
